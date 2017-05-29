@@ -1,0 +1,59 @@
+@(tasks: List[Task])(implicit messages: Messages)
+
+@import java.util.Date
+
+@main("ToDo task list") {
+
+  <div>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr style="background-color: #EEEEEE">
+          <th class="text-center" style="width: 3%">#</th>
+          <th class="text-center" style="width: 3%">ID</th>
+          <th class="text-center">Task</th>
+          <th class="text-center" style="width: 8%;
+            padding-left: 0px;
+            padding-right: 0px">Status</th>
+          <th class="text-center" style="width: 10%;
+            padding-left: 0px;
+            padding-right: 0px">Creation Date</th>
+          <th class="text-center" style="width: 10%;
+            padding-left: 0px;
+            padding-right: 0px">Expiration Date</th>
+          <th class="text-center" style="width: 15%">Assigner</th>
+          <th class="text-center" style="width: 15%">Executor</th>
+        </tr>
+      </thead>
+      <tbody class="text-center">
+      @tasks.zipWithIndex.map { case (task, index) =>
+      <tr>
+        <td style="width: 3%;
+          vertical-align: middle">@(index + 1)</td>
+        <td style="width: 3%;
+          vertical-align: middle">@task.id</td>
+        <td style="vertical-align: middle">@task.label</td>
+        <td style="vertical-align: middle">@if(task.expirationDate before new Date()) {Expired} else {In process}</td>
+        <td style="vertical-align: middle">@task.creationDate.format("dd/MM/yyyy")</td>
+        <td style="vertical-align: middle">@task.expirationDate.format("dd/MM/yyyy")</td>
+        <td style="vertical-align: middle">@task.assigner</td>
+        <td style="vertical-align: middle">@task.executor</td>
+        <td style="background-color: white;
+          border-color: white;
+          width: 8%;
+          padding-top: 0px;
+          padding-bottom: 0px;
+          vertical-align: middle">
+          <a href="http://localhost:9000/taskedit/@task.id" class="btn btn-info" role="button" style="outline: none;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        width: 100%">
+        Edit
+      </a>
+      </td>
+      </tr>
+      }
+      </tbody>
+    </table>
+  </div>
+
+}

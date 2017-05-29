@@ -1,4 +1,4 @@
-@(tasks: List[Task], taskForm: Form[String])(implicit messages: Messages)
+@(tasks: List[Task], taskForm: Form[TaskForm])(implicit messages: Messages)
 
 @import helper._
 
@@ -16,8 +16,5 @@
     }
   </ul>
   <h2>Add a new task</h2>
-  @form(routes.HomeController.newTask) {
-    @inputText(taskForm("label"))
-    <input type="submit" value="Create">
-  }
+
 }

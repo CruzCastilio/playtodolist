@@ -9,33 +9,49 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 
 @Singleton
-class HomeController @Inject()(val messagesApi: MessagesApi) extends Controller with I18nSupport{
+class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
   def index = Action {
-    Redirect(routes.HomeController.tasks)
+    Redirect(routes.HomeController.taskList())
   }
 
-  def tasks = Action {
-    Ok(views.html.index(Task.all(), taskForm))
+  def taskList() = Action {
+    Ok(views.html.tasklist(taskDao.all()))
   }
 
-  def newTask = Action { implicit request =>
-    taskForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.index(Task.all(), errors)),
-      label => {
-        Task.create(label)
-        Redirect(routes.HomeController.tasks)
-      }
-    )
+  /*
+    def postTask = Action { implicit request =>
+      taskForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.taskedit(taskDao.all(), formWithErrors)),
+        task => {
+          taskDao.create(task.label, task.assigner)
+          Redirect(routes.HomeController.taskList())
+        }
+      )
+    }
+  */
+  def taskEdit(id: Long) = Action { implicit request =>
+    taskDao.findById(id) match {
+      case obj@Some(task) => Ok(views.html.taskedit(obj, taskForm))
+      case None => BadRequest("Not Found")
+    }
   }
+
+  def taskNew = ???
 
   def deleteTask(id: Long) = Action { implicit request =>
-    Task.delete(id)
-    Redirect(routes.HomeController.tasks)
+    taskDao.delete(id)
+    Redirect(routes.HomeController.taskList())
   }
 
   val taskForm = Form(
-    "label" -> nonEmptyText
+    mapping(
+      "label" -> nonEmptyText,
+      "task" -> nonEmptyText,
+      "creationDate" -> date,
+      "expirationDate" -> date,
+      "assigner" -> nonEmptyText,
+      "executor" -> nonEmptyText
+    )(TaskForm.apply)(TaskForm.unapply)
   )
-
 }
