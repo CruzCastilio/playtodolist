@@ -1,51 +1,44 @@
 @(task: Option[Task] = None, taskForm: Form[TaskForm])(implicit messages: Messages)
 
+@import helper._
+
 @main("ToDo task list") {
 
-  <div>
-    <table class="table table-bordered table-striped">
-      <thead>
-        <tr style="background-color: #EEEEEE">
-          <th class="text-center" style="width: 3%">ID</th>
-          <th class="text-center">Task</th>
-          <th class="text-center" style="width: 10%;
-            padding-left: 0px;
-            padding-right: 0px">Creation Date</th>
-          <th class="text-center" style="width: 10%;
-            padding-left: 0px;
-            padding-right: 0px">Expiration Date</th>
-          <th class="text-center" style="width: 15%">Assigner</th>
-          <th class="text-center" style="width: 15%">Executor</th>
-        </tr>
-      </thead>
-      <tbody class="text-center">
-      @task.map { task =>
-        <tr>
-          <td style="width: 3%;
-            vertical-align: middle">@task.id</td>
-          <td>ashgdkasghdkasgdahsgdjkgaskjdgas ashdgasgjkasgdkjas asjhdgaksjdgjasgd asjdgasjkhgdkj agsdgaskjdg asgdjags
-            askghdaksdg agsdkjasgdhasgdjkgaskjdg asdgajsgdjkasgd hasgdjasgdhghgjhgasd asgdajksdgajsgdjkags dasgdjagsd</td>
-          <td style="vertical-align: middle">@task.creationDate.format("dd/MM/yyyy")</td>
-          <td style="vertical-align: middle">@task.expirationDate.format("dd/MM/yyyy")</td>
-          <td style="vertical-align: middle">@task.assigner</td>
-          <td style="vertical-align: middle">@task.executor</td>
-          <td style="background-color: white;
-            border-color: white;
-            width: 8%;
-            padding-top: 0px;
-            padding-bottom: 0px;
-            vertical-align: middle">
-            <a href="http://localhost:9000/taskedit/@task.id" class="btn btn-info" role="button" style="outline: none;
-              padding-top: 3px;
-              padding-bottom: 3px;
-              width: 100%">
-              Edit
-            </a>
-          </td>
-        </tr>
-      }
-      </tbody>
-    </table>
-  </div>
-
+  @task.map { task =>
+    <form>
+      <div class="form-group">
+        <label for="usr">Id:</label>
+        <input type="text" class="form-control" value="@task.id" disabled>
+        <label for="usr">Creation Date:</label>
+        <input type="text" class="form-control field" value="@task.creationDate.format("dd/MM/yyyy")" disabled>
+        <label for="usr">Expiration Date:</label>
+        <input type="text" class="form-control field" value="@task.expirationDate.format("dd/MM/yyyy")" disabled>
+        <label for="usr">Assigner:</label>
+        <input type="text" class="form-control field" value="@task.assigner" disabled>
+        <label for="usr">Executor:</label>
+        <input type="text" class="form-control field" value="@task.executor" disabled>
+        <label for="comment">Task:</label>
+        <textarea class="form-control field" rows="5" disabled>@task.task</textarea>
+      </div>
+    </form>
+  }
+  <button id="enabler" class="btn btn-info" role="button" style="outline: none;
+    width: 10%">Edit</button>
+  <button id="cancel" class="btn btn-danger" role="button" style="outline: none;
+    width: 10%;
+    display: none">
+    Cancel
+  </button>
+  <script>
+          $("#enabler").click(function () {
+            $(".field").prop("disabled", false);
+            $("#enabler").removeClass("btn-info").addClass("btn-success").text("Confirm");
+            $("#cancel").show();
+          });
+          $("#cancel").click(function () {
+            $(".field").prop("disabled", true);
+            $("#enabler").removeClass("btn-success").addClass("btn-info").text("Edit");
+            $("#cancel").hide();
+          });
+  </script>
 }

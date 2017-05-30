@@ -42,9 +42,14 @@ class TaskDao @Inject()(engine: DbEngine) {
              executor: String): Int = {
     engine.db.withConnection { implicit c =>
       SQL("insert into task (label, task, creationDate, expirationDate, assigner, executor) values ({label, task, " +
-        "creationDate, expirationDate, assigner, executor})").on('label -> label, 'task -> task,
-        'creationDate -> creationDate, 'expirationDate -> expirationDate, 'assigner -> assigner,
-        'executor -> executor).executeUpdate()
+        "creationDate, expirationDate, assigner, executor})").on(
+        'label -> label,
+        'task -> task,
+        'creationDate -> creationDate,
+        'expirationDate -> expirationDate,
+        'assigner -> assigner,
+        'executor -> executor
+      ).executeUpdate()
     }
   }
 

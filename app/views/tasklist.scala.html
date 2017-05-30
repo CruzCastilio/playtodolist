@@ -32,7 +32,11 @@
         <td style="width: 3%;
           vertical-align: middle">@task.id</td>
         <td style="vertical-align: middle">@task.label</td>
-        <td style="vertical-align: middle">@if(task.expirationDate before new Date()) {Expired} else {In process}</td>
+        @if(task.expirationDate before new Date()) {
+          <td class="danger" style="vertical-align: middle">Expired</td>
+        } else {
+          <td class="success" style="vertical-align: middle">In process</td>
+        }
         <td style="vertical-align: middle">@task.creationDate.format("dd/MM/yyyy")</td>
         <td style="vertical-align: middle">@task.expirationDate.format("dd/MM/yyyy")</td>
         <td style="vertical-align: middle">@task.assigner</td>
@@ -47,7 +51,7 @@
         padding-top: 3px;
         padding-bottom: 3px;
         width: 100%">
-        Edit
+        Details
       </a>
       </td>
       </tr>
