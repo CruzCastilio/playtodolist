@@ -7,11 +7,21 @@ import anorm.SqlParser._
 import anorm._
 import play.api.db._
 
-case class Task(id: Long, label: String, task: String, creationDate: Date, expirationDate: Date,
-                assigner: String, executor: String)
+case class Task(
+  id: Long,
+  label: String,
+  task: String,
+  creationDate: Date,
+  expirationDate: Date,
+  assigner: String,
+  executor: String)
 
-case class TaskForm(label: String, task: String, creationDate: Date, expirationDate: Date, assigner: String,
-                    executor: String)
+case class TaskForm(
+  label: String,
+  task: String,
+  expirationDate: Date,
+  assigner: String,
+  executor: String)
 
 @Singleton
 class DbEngine @Inject()(dbApi: DBApi) {
@@ -41,14 +51,29 @@ class TaskDao @Inject()(engine: DbEngine) {
   def create(label: String, task: String, creationDate: Date, expirationDate: Date, assigner: String,
              executor: String): Int = {
     engine.db.withConnection { implicit c =>
-      SQL("insert into task (label, task, creationDate, expirationDate, assigner, executor) values ({label, task, " +
-        "creationDate, expirationDate, assigner, executor})").on(
+      SQL("insert into task (label, task, creationDate, expirationDate, assigner, executor) values ({label}, {task}, " +
+        "{creationDate}, {expirationDate}, {assigner}, {executor})").on(
         'label -> label,
         'task -> task,
         'creationDate -> creationDate,
         'expirationDate -> expirationDate,
         'assigner -> assigner,
         'executor -> executor
+      ).executeUpdate()
+    }
+  }
+
+  def edit(id: Long, label: String, task: String, expirationDate: Date, assigner: String,
+           executor: String): Int = {
+    engine.db.withConnection { implicit c =>
+      SQL("UPDATE task SET label = {label}, task = {task}," +
+        "expirationDate = {expirationDate}, assigner = {assigner}, executor = {executor} where id = {id}").on(
+        'label -> label,
+        'task -> task,
+        'expirationDate -> expirationDate,
+        'assigner -> assigner,
+        'executor -> executor,
+        'id -> id
       ).executeUpdate()
     }
   }

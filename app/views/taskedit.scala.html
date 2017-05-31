@@ -4,63 +4,78 @@
 
 @main("ToDo task list") {
 
-  <form action=@routes.HomeController.taskPost()>
-    <div class="form-group">
-      <label for="id">Id:</label>
-      <div class="input">
-        <input type="text" class="form-control" value="@task.map(_.id).getOrElse("")" disabled>
-      </div>
-      <label for="creationDate">Creation Date:</label>
-      <div class="input">
-        <input type="text" class="form-control"
-        value="@task.map(_.creationDate.format("dd/MM/yyyy")).getOrElse(new Date().format("dd/MM/yyyy"))" disabled>
-      </div>
-      <label for="expirtationDate">Expiration Date:</label>
-      <div class="input">
-        <input type="text" class="form-control field"
-        value="@task.map(_.expirationDate.format("dd/MM/yyyy")).getOrElse("")" disabled>
-      </div>
-      <label for="assigner">Assigner:</label>
-      <div class="input">
-        <input type="text" class="form-control field" value="@task.map(_.assigner).getOrElse("")" disabled>
-      </div>
-      <label for="executor">Executor:</label>
-      <div class="input">
-        <input type="text" class="form-control field" value="@task.map(_.executor).getOrElse("")" disabled>
-      </div>
-      <label for="task">Task:</label>
-      <div class="input">
-        <input class="form-control field" rows="5" disabled value="@task.map(_.task).getOrElse("")">
-      </div>
-    </div>
-    <p><input type="submit"></p>
-  </form>
-
   @if(task.isEmpty) {
     <script>
-            $(function () {
-              $(".field").prop("disabled", false);
-            });
+      $(function () {
+        $(".field").prop("disabled", false);
+        $("#reset, #confirm").show();
+        $("#newtask").prop("action", "@routes.HomeController.taskPost");
+        $("#creationDateBlock").hide();
+      });
+    </script>
+  } else {
+    <script>
+      $(function () {
+        $("#edit").show();
+        $("#newtask").prop("action", "@routes.HomeController.taskEdit(task.map(_.id).get)");
+      })
     </script>
   }
 
-  <button id="enabler" class="btn btn-info" role="button" style="outline: none;
-    width: 10%">Edit</button>
-  <button id="cancel" class="btn btn-danger" role="button" style="outline: none;
-    width: 10%;
-    display: none">
-    Cancel
-  </button>
-  <script>
-          $("#enabler").click(function () {
-            $(".field").prop("disabled", false);
-            $("#enabler").removeClass("btn-info").addClass("btn-success").text("Confirm");
-            $("#cancel").show();
-          });
-          $("#cancel").click(function () {
-            $(".field").prop("disabled", true);
-            $("#enabler").removeClass("btn-success").addClass("btn-info").text("Edit");
-            $("#cancel").hide();
-          });
-  </script>
+  <form id="newtask" method="post">
+    <div class="form-group">
+      <div id="creationDateBlock">
+        <label for="creationDate">Creation Date:</label>
+        <input name="creationDate" type="date" class="form-control field"
+               value="@task.map(_.creationDate).getOrElse(new Date().format("yyyy-MM-dd"))" disabled>
+      </div>
+      <label for="expirationDate">Expiration Date:</label>
+      <input name="expirationDate" type="date" class="form-control field"
+             value="@task.map(_.expirationDate).getOrElse("")" disabled>
+      <label for="assigner">Assigner:</label>
+      <input name="assigner" type="text" class="form-control field" value="@task.map(_.assigner).getOrElse("")" disabled>
+      <label for="executor">Executor:</label>
+      <input name="executor" type="text" class="form-control field" value="@task.map(_.executor).getOrElse("")" disabled>
+      <label for="label">Label:</label>
+      <input name="label" type="text" class="form-control field" value="@task.map(_.label).getOrElse("")" disabled>
+      <label for="task">Task:</label>
+      <input name="task" type="text" class="form-control field" value="@task.map(_.task).getOrElse("")" disabled>
+    </div>
+    @*<button class="btn btn-default" type="submit" style="outline: none; width: 10%">Save &raquo;</button>*@
+    <button id="edit" class="btn btn-info" type="button" role="button" style="outline: none; width: 10%; display: none">Edit</button>
+    <button id="confirm" class="btn btn-success" type="submit" role="button" style="outline: none; width: 10%; display: none">Confirm</button>
+    <button id="reset" class="btn btn-danger" type="reset" role="button" style="outline: none; width: 10%; display: none">Reset</button>
+    <button id="cancel" class="btn btn-danger" type="reset" role="button" style="outline: none; width: 10%; display: none">Cancel</button>
+    <script>
+            $("#edit").click(function () {
+              $(".field").prop("disabled", false);
+              $("#edit").hide();
+              $("#confirm").show();
+              $("#cancel").show();
+              $("#creationDateBlock").hide();
+            });
+            $("#cancel").click(function () {
+              $(".field").prop("disabled", true);
+              $("#cancel").hide();
+              $("#confirm").hide();
+              $("#edit").show();
+              $("#creationDateBlock").show();
+            });
+    </script>
+  </form>
+
+@*      <!-- helper style -->
+
+  @form(routes.HomeController.taskPost) {
+    @inputText(taskForm("id"), '_label -> "Id", 'class -> "form-control", 'disabled -> true)
+    @inputText(taskForm("label"), '_label -> "Label", 'class -> "form-control field", 'disabled -> true)
+    @inputDate(taskForm("creationDate"), '_label -> "Creation Date", 'class -> "form-control field", 'disabled -> true)
+    @inputDate(taskForm("expirationDate"), '_label -> "Expiration Date", 'class -> "form-control field", 'disabled -> true)
+    @inputText(taskForm("assigner"), '_label -> "Assigner", 'class -> "form-control field", 'disabled -> true)
+    @inputText(taskForm("executor"),  '_label -> "Executor",'class -> "form-control field", 'disabled -> true)
+    @inputText(taskForm("task"), '_label -> "Task", 'class -> "form-control field", 'disabled -> true)
+    <button class="btn btn-default" type="submit">Save &raquo;</button>
+  }
+*@
+
 }

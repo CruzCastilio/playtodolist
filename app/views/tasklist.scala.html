@@ -9,7 +9,6 @@
       <thead>
         <tr style="background-color: #EEEEEE">
           <th class="text-center" style="width: 3%">#</th>
-          <th class="text-center" style="width: 3%">ID</th>
           <th class="text-center">Task</th>
           <th class="text-center" style="width: 8%;
             padding-left: 0px;
@@ -29,8 +28,6 @@
       <tr>
         <td style="width: 3%;
           vertical-align: middle">@(index + 1)</td>
-        <td style="width: 3%;
-          vertical-align: middle">@task.id</td>
         <td style="vertical-align: middle">@task.label</td>
         @if(task.expirationDate before new Date()) {
           <td class="danger" style="vertical-align: middle">Expired</td>
@@ -47,7 +44,7 @@
           padding-top: 0px;
           padding-bottom: 0px;
           vertical-align: middle">
-          <a href="@routes.HomeController.taskEdit(task.id)" class="btn btn-info" role="button" style="outline: none;
+          <a href="@routes.HomeController.taskDetails(task.id)" class="btn btn-info" role="button" style="outline: none;
         padding-top: 3px;
         padding-bottom: 3px;
         width: 100%">

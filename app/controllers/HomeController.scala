@@ -1,5 +1,6 @@
 package controllers
 
+import java.util.Date
 import javax.inject._
 
 import models._
@@ -24,7 +25,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     taskForm.bindFromRequest.fold(
       formWithErrors => BadRequest("WRONG!!!"),
       task => {
-        taskDao.create(task.label, task.task, task.creationDate, task.expirationDate, task.assigner, task.executor)
+        taskDao.create(task.label, task.task, new Date(), task.expirationDate, task.assigner, task.executor)
         Redirect(routes.HomeController.taskList)
       }
     )
@@ -32,7 +33,21 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
 
   def taskEdit(id: Long) = Action { implicit request =>
     taskDao.findById(id) match {
-      case obj@Some(task) => Ok(views.html.taskedit(obj, taskForm))
+      case Some(found) =>
+        taskForm.bindFromRequest.fold(
+          formWithErrors => BadRequest("WRONG!!!"),
+          task => {
+            taskDao.edit(id, task.label, task.task, task.expirationDate, task.assigner, task.executor)
+            Redirect(routes.HomeController.taskList)
+          }
+        )
+      case None => BadRequest("Not Found")
+    }
+  }
+
+  def taskDetails(id: Long) = Action { implicit request =>
+    taskDao.findById(id) match {
+      case obj @ Some(task) => Ok(views.html.taskedit(obj, taskForm))
       case None => BadRequest("Not Found")
     }
   }
@@ -50,7 +65,6 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     mapping(
       "label" -> nonEmptyText,
       "task" -> nonEmptyText,
-      "creationDate" -> date,
       "expirationDate" -> date,
       "assigner" -> nonEmptyText,
       "executor" -> nonEmptyText

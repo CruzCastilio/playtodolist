@@ -3,7 +3,8 @@ GET         /                        controllers.HomeController.index
 
 # Tasks
 GET         /tasklist                controllers.HomeController.taskList
-GET         /taskedit/:id            controllers.HomeController.taskEdit(id: Long)
+GET         /taskedit/:id            controllers.HomeController.taskDetails(id: Long)
+POST        /taskedit/:id            controllers.HomeController.taskEdit(id: Long)
 GET         /taskedit                controllers.HomeController.taskNew
 POST        /taskedit                controllers.HomeController.taskPost
 POST        /tasks/:id/delete        controllers.HomeController.deleteTask(id: Long)
