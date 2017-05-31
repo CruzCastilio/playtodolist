@@ -1,27 +1,49 @@
 @(task: Option[Task] = None, taskForm: Form[TaskForm])(implicit messages: Messages)
 
-@import helper._
+@import java.util.Date
 
 @main("ToDo task list") {
 
-  @task.map { task =>
-    <form>
-      <div class="form-group">
-        <label for="usr">Id:</label>
-        <input type="text" class="form-control" value="@task.id" disabled>
-        <label for="usr">Creation Date:</label>
-        <input type="text" class="form-control field" value="@task.creationDate.format("dd/MM/yyyy")" disabled>
-        <label for="usr">Expiration Date:</label>
-        <input type="text" class="form-control field" value="@task.expirationDate.format("dd/MM/yyyy")" disabled>
-        <label for="usr">Assigner:</label>
-        <input type="text" class="form-control field" value="@task.assigner" disabled>
-        <label for="usr">Executor:</label>
-        <input type="text" class="form-control field" value="@task.executor" disabled>
-        <label for="comment">Task:</label>
-        <textarea class="form-control field" rows="5" disabled>@task.task</textarea>
+  <form action=@routes.HomeController.taskPost()>
+    <div class="form-group">
+      <label for="id">Id:</label>
+      <div class="input">
+        <input type="text" class="form-control" value="@task.map(_.id).getOrElse("")" disabled>
       </div>
-    </form>
+      <label for="creationDate">Creation Date:</label>
+      <div class="input">
+        <input type="text" class="form-control"
+        value="@task.map(_.creationDate.format("dd/MM/yyyy")).getOrElse(new Date().format("dd/MM/yyyy"))" disabled>
+      </div>
+      <label for="expirtationDate">Expiration Date:</label>
+      <div class="input">
+        <input type="text" class="form-control field"
+        value="@task.map(_.expirationDate.format("dd/MM/yyyy")).getOrElse("")" disabled>
+      </div>
+      <label for="assigner">Assigner:</label>
+      <div class="input">
+        <input type="text" class="form-control field" value="@task.map(_.assigner).getOrElse("")" disabled>
+      </div>
+      <label for="executor">Executor:</label>
+      <div class="input">
+        <input type="text" class="form-control field" value="@task.map(_.executor).getOrElse("")" disabled>
+      </div>
+      <label for="task">Task:</label>
+      <div class="input">
+        <input class="form-control field" rows="5" disabled value="@task.map(_.task).getOrElse("")">
+      </div>
+    </div>
+    <p><input type="submit"></p>
+  </form>
+
+  @if(task.isEmpty) {
+    <script>
+            $(function () {
+              $(".field").prop("disabled", false);
+            });
+    </script>
   }
+
   <button id="enabler" class="btn btn-info" role="button" style="outline: none;
     width: 10%">Edit</button>
   <button id="cancel" class="btn btn-danger" role="button" style="outline: none;

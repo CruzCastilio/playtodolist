@@ -4,7 +4,8 @@ GET         /                        controllers.HomeController.index
 # Tasks
 GET         /tasklist                controllers.HomeController.taskList
 GET         /taskedit/:id            controllers.HomeController.taskEdit(id: Long)
-#GET     /tasknew                    controllers.HomeController.taskNew
+GET         /taskedit                controllers.HomeController.taskNew
+POST        /taskedit                controllers.HomeController.taskPost
 POST        /tasks/:id/delete        controllers.HomeController.deleteTask(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path

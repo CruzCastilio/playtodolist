@@ -15,21 +15,21 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     Redirect(routes.HomeController.taskList())
   }
 
-  def taskList() = Action {
+  def taskList = Action {
     Ok(views.html.tasklist(taskDao.all()))
   }
 
-  /*
-    def postTask = Action { implicit request =>
-      taskForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.taskedit(taskDao.all(), formWithErrors)),
-        task => {
-          taskDao.create(task.label, task.assigner)
-          Redirect(routes.HomeController.taskList())
-        }
-      )
-    }
-  */
+
+  def taskPost = Action { implicit request =>
+    taskForm.bindFromRequest.fold(
+      formWithErrors => BadRequest("WRONG!!!"),
+      task => {
+        taskDao.create(task.label, task.task, task.creationDate, task.expirationDate, task.assigner, task.executor)
+        Redirect(routes.HomeController.taskList)
+      }
+    )
+  }
+
   def taskEdit(id: Long) = Action { implicit request =>
     taskDao.findById(id) match {
       case obj@Some(task) => Ok(views.html.taskedit(obj, taskForm))
@@ -37,7 +37,9 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     }
   }
 
-  def taskNew = ???
+  def taskNew = Action {
+    Ok(views.html.taskedit(None, taskForm))
+  }
 
   def deleteTask(id: Long) = Action { implicit request =>
     taskDao.delete(id)

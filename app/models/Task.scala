@@ -38,7 +38,7 @@ class TaskDao @Inject()(engine: DbEngine) {
     SQL("select * from task").as(task *)
   }
 
-  def create(label: String, task: String, creationDate: String, expirationDate: String, assigner: String,
+  def create(label: String, task: String, creationDate: Date, expirationDate: Date, assigner: String,
              executor: String): Int = {
     engine.db.withConnection { implicit c =>
       SQL("insert into task (label, task, creationDate, expirationDate, assigner, executor) values ({label, task, " +
