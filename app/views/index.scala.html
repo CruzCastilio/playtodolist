@@ -1,20 +1,7 @@
 @(tasks: List[Task], taskForm: Form[TaskForm])(implicit messages: Messages)
 
-@import helper._
+
 
 @main("ToDo List") {
-
-  <h1>@tasks.size task(s)</h1>
-  <ul>
-    @tasks.map { task =>
-      <li>
-        @task.label
-        @form(routes.HomeController.deleteTask(task.id)) {
-          <input type="submit" value="Delete">
-        }
-      </li>
-    }
-  </ul>
-  <h2>Add a new task</h2>
 
 }

@@ -47,7 +47,8 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
 
   def taskDetails(id: Long) = Action { implicit request =>
     taskDao.findById(id) match {
-      case obj @ Some(task) => Ok(views.html.taskedit(obj, taskForm))
+      case obj @ Some(task) => Ok(views.html.taskedit(Some((task.id, task.creationDate)),taskForm.fill(TaskForm(
+        task.label, task.task, task.expirationDate, task.assigner, task.executor))))
       case None => BadRequest("Not Found")
     }
   }
@@ -56,7 +57,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     Ok(views.html.taskedit(None, taskForm))
   }
 
-  def deleteTask(id: Long) = Action { implicit request =>
+  def taskDelete(id: Long) = Action { implicit request =>
     taskDao.delete(id)
     Redirect(routes.HomeController.taskList())
   }
