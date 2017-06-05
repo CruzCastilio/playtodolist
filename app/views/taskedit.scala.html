@@ -5,6 +5,7 @@
   @if(params.isEmpty) {
     <script>
             $(function () {
+              $("#taskHeader").text("NEW TASK");
               $(".field").prop("readonly", false);
               $("#reset, #confirm").show();
               $("#newtask").prop("action", "@routes.HomeController.taskPost");
@@ -14,16 +15,19 @@
   } else {
     <script>
             $(function () {
+              $("#taskHeader").text("TASK DETAILS");
               $("#edit").show();
-              $("#delete").show().prop("action", "@routes.HomeController.taskDelete(params.get._1)");
+              $("#deleteButton").show();
+              $("#delete").prop("action", "@routes.HomeController.taskDelete(params.get._1)");
               $("#newtask").prop("action", "@routes.HomeController.taskEdit(params.get._1)");
             })
     </script>
   }
 
-
+  <div class="well well-sm">
+    <h2 id="taskHeader" style="text-align: center">TASK LIST</h2>
+  </div>
   <form role="form" id="newtask" method="post">
-
     <div class="form-group row">
       <div class="form-group col-xs-4">
         <label for="label" class="control-label"><span class="glyphicon glyphicon-modal-window"></span> Label:</label>
@@ -60,45 +64,68 @@
       <textarea name="task" class="form-control field" rows="5" id="inputTask" placeholder="Task" readonly>@taskForm(
       "task").value</textarea>
     </div>
-
     <button id="edit" class="btn btn-info" type="button" role="button" style="position: relative; outline: none;
     width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-pencil" st></i></span> Edit</button>
+      <i class="glyphicon glyphicon-pencil"></i></span> Edit</button>
     <button id="confirm" class="btn btn-success" type="submit" role="button" style="position: relative; outline: none;
-      width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-ok" st></i></span> Confirm</button>
+    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-ok"></i></span> Confirm</button>
     <button id="reset" class="btn btn-danger" type="reset" role="button" style="position: relative; outline: none;
-      width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-remove" st></i></span> Reset</button>
+    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-remove"></i></span> Reset</button>
     <button id="cancel" class="btn btn-danger" type="reset" role="button" style="position: relative;outline: none;
-      width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-remove" st></i></span> Cancel</button>
-
+    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-remove"></i></span> Cancel</button>
     <script>
             $("#edit").click(function () {
               $(".field").prop("readonly", false);
               $("#edit").hide();
               $("#confirm").show();
               $("#cancel").show();
-              $("#creationDateBlock, #delete").hide();
-
+              $("#creationDateBlock, #deleteButton").hide();
+              $("#taskHeader").text("TASK EDIT");
             });
             $("#cancel").click(function () {
               $(".field").prop("readonly", true);
               $("#cancel, #confirm").hide();
-              $("#edit, #creationDateBlock, #delete").show();
-
+              $("#edit, #creationDateBlock, #deleteButton").show();
+              $("#taskHeader").text("TASK DETAILS");
             });
     </script>
-
   </form>
+  <br>
+  <div id="myModal" class="modal fade" tabindex="-1" role="dialog" style="position: absolute; top: 30%">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" style="text-align: center"><b>TASK DELETING</b></h4>
+        </div>
+        <div class="modal-body">
+          <h4 style="text-align: center">Do you want to delete the task?</h4>
+        </div>
+        <div class="modal-footer">
 
-  <form id="delete" style="display: none" method="post">
-    <br>
-    <button class="btn btn-danger" type="submit" role="button" style="position: relative; outline: none; width: 10%">
-      <span class="btn-label" style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i>
-      </span> Delete</button>
-  </form>
+          <form id="delete" method="post">
+            <button class="btn btn-success col-md-1" type="submit" role="button" style="position: relative;
+            outline: none; width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%"><i
+            class="glyphicon glyphicon-trash"></i></span> Delete</button>
+          </form>
+          <button class="btn btn-danger" data-dismiss="modal" role="button" style="position: relative; outline: none;
+          width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+          <i class="glyphicon glyphicon-remove"></i></span> Cancel</button>
+
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  <button id="deleteButton" class="btn btn-danger" type="button" role="button" data-toggle="modal"
+  data-target="#myModal" style="position: relative; outline: none; width: 10%; display: none"><span class="btn-label"
+  style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i></span> Delete</button>
+
+
+
 
   @*      <!-- helper style -->
 
