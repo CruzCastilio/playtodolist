@@ -13,11 +13,13 @@
   <body>
     <div class="jumbotron text-center">
       <h1>ToDo List Application</h1>
-      <a href="@routes.HomeController.taskList" class="btn btn-info" role="button" style="outline: none">Task List</a>
-      <a href="@routes.HomeController.taskNew" class="btn btn-info" role="button" style="outline: none">Create Task</a>
+      <a href="@routes.HomeController.taskList" class="btn btn-info" role="button" style="position: relative;
+      outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
+      class="glyphicon glyphicon-list"></span> Task List</a>
+      <a href="@routes.HomeController.taskNew" class="btn btn-info" role="button" style="position: relative;
+      outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
+      class="glyphicon glyphicon-plus"></span>Create Task</a>
     </div>
-    <div class="container">
-    @content
-    </div>
+    <div class="container">@content</div>
   </body>
 </html>

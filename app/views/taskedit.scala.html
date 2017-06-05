@@ -4,94 +4,114 @@
 
   @if(params.isEmpty) {
     <script>
-      $(function () {
-        $(".field").prop("disabled", false);
-        $("#reset, #confirm").show();
-        $("#newtask").prop("action", "@routes.HomeController.taskPost");
-        $("#creationDateBlock").hide();
-      });
+            $(function () {
+              $(".field").prop("readonly", false);
+              $("#reset, #confirm").show();
+              $("#newtask").prop("action", "@routes.HomeController.taskPost");
+              $("#creationDateBlock").hide();
+            });
     </script>
   } else {
     <script>
-      $(function () {
-        $("#edit").show();
-        $("#delete").show().prop("action", "@routes.HomeController.taskDelete(params.get._1)");
-        $("#newtask").prop("action", "@routes.HomeController.taskEdit(params.get._1)");
-      })
+            $(function () {
+              $("#edit").show();
+              $("#delete").show().prop("action", "@routes.HomeController.taskDelete(params.get._1)");
+              $("#newtask").prop("action", "@routes.HomeController.taskEdit(params.get._1)");
+            })
     </script>
   }
 
+
   <form role="form" id="newtask" method="post">
-    <div>
-      <div class="form-group">
-        <label for="label" class="control-label">Label:</label>
-        <input name="label" type="text" class="form-control field" value="@taskForm("label").value" disabled id="inputLabel" placeholder="Label">
+
+    <div class="form-group row">
+      <div class="form-group col-xs-4">
+        <label for="label" class="control-label"><span class="glyphicon glyphicon-modal-window"></span> Label:</label>
+        <input name="label" type="text" class="form-control field" value="@taskForm("label").value"
+        id="inputLabel" placeholder="Label" readonly>
       </div>
-      <div class="form-group">
+      <div class="form-group col-xs-2">
         <div id="creationDateBlock">
-          <label for="creationDate" class="control-label">Creation Date:</label>
+          <label for="creationDate" class="control-label"><span class="glyphicon glyphicon-calendar">
+          </span> Creation Date:</label>
           <input name="creationDate" type="date" class="form-control field" id="inputExpirationDate"
-                 value="@if(params.isDefined)(params.get._2)" disabled>
+          value="@if(params.isDefined)(params.get._2)" readonly>
         </div>
       </div>
-      <div class="form-group">
-        <label for="expirationDate" class="control-label">Expiration Date:</label>
-        <input name="expirationDate" type="date" class="form-control field" id="inputExpirationDate" placeholder="Expiration Date"
-               value="@taskForm("expirationDate").value" disabled>
+      <div class="form-group col-xs-2">
+        <label for="expirationDate" class="control-label"><span class="glyphicon glyphicon-calendar">
+        </span> Expiration Date:</label>
+        <input name="expirationDate" type="date" class="form-control field" id="inputExpirationDate"
+        placeholder="Expiration Date" value="@taskForm("expirationDate").value" readonly>
       </div>
-      <div class="form-group">
-        <label for="assigner" class="control-label">Assigner:</label>
-        <input name="assigner" type="text" class="form-control field" value="@taskForm("assigner").value" disabled id="inputAssigner" placeholder="Assigner">
+      <div class="form-group col-xs-2">
+        <label for="assigner" class="control-label"><span class="glyphicon glyphicon-user"></span> Assigner:</label>
+        <input name="assigner" type="text" class="form-control field" value="@taskForm("assigner").value"
+        id="inputAssigner" placeholder="Assigner" readonly>
       </div>
-      <div class="form-group">
-        <label for="executor" class="control-label">Executor:</label>
-        <input name="executor" type="text" class="form-control field" value="@taskForm("executor").value" disabled id="inputExecutor" placeholder="Executor">
+      <div class="form-group col-xs-2">
+        <label for="executor" class="control-label"><span class="glyphicon glyphicon-user"></span> Executor:</label>
+        <input name="executor" type="text" class="form-control field" value="@taskForm("executor").value"
+        id="inputExecutor" placeholder="Executor" readonly>
       </div>
     </div>
     <div class="form-group">
-      <label for="task" class="control-label">Task:</label>
-      <input name="task" type="text" class="form-control field" value="@taskForm("task").value" disabled id="inputTask" placeholder="Task">
+      <label for="task" class="control-label"><span class="glyphicon glyphicon-align-justify  "></span> Task:</label>
+      <textarea name="task" class="form-control field" rows="5" id="inputTask" placeholder="Task" readonly>@taskForm(
+      "task").value</textarea>
     </div>
 
-    <button id="edit" class="btn btn-info" type="button" role="button" style="outline: none; width: 10%; display: none">Edit</button>
-    <button id="confirm" class="btn btn-success" type="submit" role="button" style="outline: none; width: 10%; display: none">Confirm</button>
-    <button id="reset" class="btn btn-danger" type="reset" role="button" style="outline: none; width: 10%; display: none">Reset</button>
-    <button id="cancel" class="btn btn-danger" type="reset" role="button" style="outline: none; width: 10%; display: none">Cancel</button>
+    <button id="edit" class="btn btn-info" type="button" role="button" style="position: relative; outline: none;
+    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-pencil" st></i></span> Edit</button>
+    <button id="confirm" class="btn btn-success" type="submit" role="button" style="position: relative; outline: none;
+      width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-ok" st></i></span> Confirm</button>
+    <button id="reset" class="btn btn-danger" type="reset" role="button" style="position: relative; outline: none;
+      width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-remove" st></i></span> Reset</button>
+    <button id="cancel" class="btn btn-danger" type="reset" role="button" style="position: relative;outline: none;
+      width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-remove" st></i></span> Cancel</button>
 
     <script>
             $("#edit").click(function () {
-              $(".field").prop("disabled", false);
+              $(".field").prop("readonly", false);
               $("#edit").hide();
               $("#confirm").show();
               $("#cancel").show();
-              $("#creationDateBlock").hide();
+              $("#creationDateBlock, #delete").hide();
+
             });
             $("#cancel").click(function () {
-              $(".field").prop("disabled", true);
-              $("#cancel").hide();
-              $("#confirm").hide();
-              $("#edit").show();
-              $("#creationDateBlock").show();
+              $(".field").prop("readonly", true);
+              $("#cancel, #confirm").hide();
+              $("#edit, #creationDateBlock, #delete").show();
+
             });
     </script>
+
   </form>
 
   <form id="delete" style="display: none" method="post">
-  <br><button class="btn btn-danger" type="submit" role="button" style="outline: none; width: 10%">Delete</button>
+    <br>
+    <button class="btn btn-danger" type="submit" role="button" style="position: relative; outline: none; width: 10%">
+      <span class="btn-label" style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i>
+      </span> Delete</button>
   </form>
 
   @*      <!-- helper style -->
 
   @form(routes.HomeController.taskPost) {
-    @inputText(taskForm("id"), '_label -> "Id", 'class -> "form-control", 'disabled -> true)
-    @inputText(taskForm("label"), '_label -> "Label", 'class -> "form-control field", 'disabled -> true)
-    @inputDate(taskForm("creationDate"), '_label -> "Creation Date", 'class -> "form-control field", 'disabled -> true)
-    @inputDate(taskForm("expirationDate"), '_label -> "Expiration Date", 'class -> "form-control field", 'disabled -> true)
-    @inputText(taskForm("assigner"), '_label -> "Assigner", 'class -> "form-control field", 'disabled -> true)
-    @inputText(taskForm("executor"),  '_label -> "Executor",'class -> "form-control field", 'disabled -> true)
-    @inputText(taskForm("task"), '_label -> "Task", 'class -> "form-control field", 'disabled -> true)
-    <button class="btn btn-default" type="submit">Save &raquo;</button>
+  @inputText(taskForm("id"), '_label -> "Id", 'class -> "form-control", 'disabled -> true)
+  @inputText(taskForm("label"), '_label -> "Label", 'class -> "form-control field", 'disabled -> true)
+  @inputDate(taskForm("creationDate"), '_label -> "Creation Date", 'class -> "form-control field", 'disabled -> true)
+  @inputDate(taskForm("expirationDate"), '_label -> "Expiration Date", 'class -> "form-control field", 'disabled -> true)
+  @inputText(taskForm("assigner"), '_label -> "Assigner", 'class -> "form-control field", 'disabled -> true)
+  @inputText(taskForm("executor"),  '_label -> "Executor",'class -> "form-control field", 'disabled -> true)
+  @inputText(taskForm("task"), '_label -> "Task", 'class -> "form-control field", 'disabled -> true)
+  <button class="btn btn-default" type="submit">Save &raquo;</button>
   }
-*@
+  *@
 
 }

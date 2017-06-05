@@ -5,20 +5,17 @@
 @main("ToDo task list") {
 
   <div>
+    <div class="well well-sm">
+      <h2 style="text-align: center; ">TASK LIST</h2>
+    </div>
     <table class="table table-bordered table-striped">
       <thead>
         <tr style="background-color: #EEEEEE">
           <th class="text-center" style="width: 3%">#</th>
           <th class="text-center">Task</th>
-          <th class="text-center" style="width: 8%;
-            padding-left: 0px;
-            padding-right: 0px">Status</th>
-          <th class="text-center" style="width: 10%;
-            padding-left: 0px;
-            padding-right: 0px">Creation Date</th>
-          <th class="text-center" style="width: 10%;
-            padding-left: 0px;
-            padding-right: 0px">Expiration Date</th>
+          <th class="text-center" style="width: 8%; padding-left: 0px; padding-right: 0px">Status</th>
+          <th class="text-center" style="width: 10%; padding-left: 0px; padding-right: 0px">Creation Date</th>
+          <th class="text-center" style="width: 10%; padding-left: 0px; padding-right: 0px">Expiration Date</th>
           <th class="text-center" style="width: 15%">Assigner</th>
           <th class="text-center" style="width: 15%">Executor</th>
         </tr>
@@ -26,8 +23,7 @@
       <tbody class="text-center">
       @tasks.zipWithIndex.map { case (task, index) =>
       <tr>
-        <td style="width: 3%;
-          vertical-align: middle">@(index + 1)</td>
+        <td style="width: 3%; vertical-align: middle">@(index + 1)</td>
         <td style="vertical-align: middle">@task.label</td>
         @if(task.expirationDate before new Date()) {
           <td class="danger" style="vertical-align: middle">Expired</td>
@@ -38,19 +34,11 @@
         <td style="vertical-align: middle">@task.expirationDate.format("dd/MM/yyyy")</td>
         <td style="vertical-align: middle">@task.assigner</td>
         <td style="vertical-align: middle">@task.executor</td>
-        <td style="background-color: white;
-          border-color: white;
-          width: 8%;
-          padding-top: 0px;
-          padding-bottom: 0px;
-          vertical-align: middle">
-          <a href="@routes.HomeController.taskDetails(task.id)" class="btn btn-info" role="button" style="outline: none;
-        padding-top: 3px;
-        padding-bottom: 3px;
-        width: 100%">
-        Details
-      </a>
-      </td>
+        <td style="background-color: white; border-color: white; width: 4%; padding-top: 0px; padding-bottom: 0px;
+          padding-right: 0px; vertical-align: middle"><a href="@routes.HomeController.taskDetails(task.id)"
+          class="btn btn-info" role="button" style="outline: none; padding-top: 3px; padding-bottom: 3px; width: 100%">
+          <span class="glyphicon glyphicon-search"></span></a>
+        </td>
       </tr>
       }
       </tbody>
