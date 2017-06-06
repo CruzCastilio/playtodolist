@@ -6,9 +6,20 @@
     <title>@title</title>
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-    <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
-    @content
+    <div class="jumbotron text-center">
+      <h1>ToDo List Application</h1>
+      <a href="@routes.HomeController.taskList" class="btn btn-info" role="button" style="position: relative;
+      outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
+      class="glyphicon glyphicon-list"></span> Task List</a>
+      <a href="@routes.HomeController.taskNew" class="btn btn-info" role="button" style="position: relative;
+      outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
+      class="glyphicon glyphicon-plus"></span>Create Task</a>
+    </div>
+    <div class="container">@content</div>
   </body>
 </html>

@@ -1,35 +1,92 @@
 package models
 
+import java.util.Date
+import javax.inject.{Inject, Singleton}
+
 import anorm.SqlParser._
 import anorm._
 import play.api.db._
-import play.api.Play.current
 
-case class Task(id: Long, label: String)
+case class Task(
+  id: Long,
+  label: String,
+  task: String,
+  creationDate: Date,
+  expirationDate: Date,
+  assigner: String,
+  executor: String)
 
-object Task {
+case class TaskForm(
+  label: String,
+  task: String,
+  expirationDate: Date,
+  assigner: String,
+  executor: String)
 
-  val task = {
+@Singleton
+class DbEngine @Inject()(dbApi: DBApi) {
+  val db: Database = dbApi.database("default")
+}
+
+@Singleton
+class TaskDao @Inject()(engine: DbEngine) {
+
+  val task: RowParser[Task] = {
     get[Long]("id") ~
-    get[String]("label") map {
-      case id~label => Task(id, label)
+      get[String]("label") ~
+      get[String]("task") ~
+      get[Date]("creationDate") ~
+      get[Date]("expirationDate") ~
+      get[String]("assigner") ~
+      get[String]("executor") map {
+      case id ~ label ~ task ~ creationDate ~ expirationDate ~ assigner ~ executor => Task(id, label, task, creationDate,
+        expirationDate, assigner, executor)
     }
   }
 
-  def all(): List[Task] = DB.withConnection { implicit c =>
+  def all(): List[Task] = engine.db.withConnection { implicit c =>
     SQL("select * from task").as(task *)
   }
 
-  def create(label: String) {
-    DB.withConnection { implicit c =>
-      SQL("insert into task (label) values ({label})").on('label -> label).executeUpdate()
+  def create(label: String, task: String, creationDate: Date, expirationDate: Date, assigner: String,
+             executor: String): Int = {
+    engine.db.withConnection { implicit c =>
+      SQL("insert into task (label, task, creationDate, expirationDate, assigner, executor) values ({label}, {task}, " +
+        "{creationDate}, {expirationDate}, {assigner}, {executor})").on(
+        'label -> label,
+        'task -> task,
+        'creationDate -> creationDate,
+        'expirationDate -> expirationDate,
+        'assigner -> assigner,
+        'executor -> executor
+      ).executeUpdate()
     }
   }
 
-  def delete(id: Long) = {
-    DB.withConnection { implicit c =>
+  def edit(id: Long, label: String, task: String, expirationDate: Date, assigner: String,
+           executor: String): Int = {
+    engine.db.withConnection { implicit c =>
+      SQL("UPDATE task SET label = {label}, task = {task}," +
+        "expirationDate = {expirationDate}, assigner = {assigner}, executor = {executor} where id = {id}").on(
+        'label -> label,
+        'task -> task,
+        'expirationDate -> expirationDate,
+        'assigner -> assigner,
+        'executor -> executor,
+        'id -> id
+      ).executeUpdate()
+    }
+  }
+
+  def delete(id: Long): Int = {
+    engine.db.withConnection { implicit c =>
       SQL("delete from task where id = {id}").on('id -> id).executeUpdate()
     }
   }
 
+  def findById(id: Long): Option[Task] = {
+    engine.db.withConnection { implicit c =>
+      SQL("select * from task where id = {id}").on('id -> id).as(task.singleOpt)
+    }
+  }
 }

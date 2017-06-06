@@ -1,10 +1,13 @@
 # Home page
-GET     /                           controllers.HomeController.index
+GET         /                        controllers.HomeController.index
 
 # Tasks
-GET     /tasks                      controllers.HomeController.tasks
-POST    /tasks                      controllers.HomeController.newTask
-POST    /tasks/:id/delete           controllers.HomeController.deleteTask(id: Long)
+GET         /tasklist                controllers.HomeController.taskList
+GET         /taskedit/:id            controllers.HomeController.taskDetails(id: Long)
+POST        /taskedit/:id            controllers.HomeController.taskEdit(id: Long)
+GET         /taskedit                controllers.HomeController.taskNew
+POST        /taskedit                controllers.HomeController.taskPost
+POST        /taskedit/:id/delete     controllers.HomeController.taskDelete(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file            controllers.Assets.versioned(path="/public", file: Asset)
