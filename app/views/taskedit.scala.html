@@ -2,26 +2,29 @@
 
 @main("ToDo task list") {
 
-  @if(params.isEmpty) {
-    <script>
-            $(function () {
-              $("#taskHeader").text("NEW TASK");
-              $(".field").prop("readonly", false);
-              $("#reset, #confirm").show();
-              $("#newtask").prop("action", "@routes.HomeController.taskPost");
-              $("#creationDateBlock").hide();
-            });
-    </script>
-  } else {
-    <script>
-            $(function () {
-              $("#taskHeader").text("TASK DETAILS");
-              $("#edit").show();
-              $("#deleteButton").show();
-              $("#delete").prop("action", "@routes.HomeController.taskDelete(params.get._1)");
-              $("#newtask").prop("action", "@routes.HomeController.taskEdit(params.get._1)");
-            })
-    </script>
+  @params match {
+    case Some((id, date)) => {
+      <script>
+              $(function () {
+                $("#taskHeader").text("TASK DETAILS");
+                $("#edit").show();
+                $("#deleteButton").show();
+                $("#deleteForm").prop("action", "@routes.HomeController.taskDelete(id)");
+                $("#newtask").prop("action", "@routes.HomeController.taskEdit(id)");
+              })
+      </script>
+    }
+    case None => {
+      <script>
+              $(function () {
+                $("#taskHeader").text("NEW TASK");
+                $(".field").prop("readonly", false);
+                $("#reset, #confirm").show();
+                $("#newtask").prop("action", "@routes.HomeController.taskPost");
+                $("#creationDateBlock").hide();
+              });
+      </script>
+    }
   }
 
   <div class="well well-sm">
@@ -107,7 +110,7 @@
         </div>
         <div class="modal-footer">
 
-          <form id="delete" method="post">
+          <form id="deleteForm" method="post">
             <button class="btn btn-success col-md-1" type="submit" role="button" style="position: relative;
             outline: none; width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%"><i
             class="glyphicon glyphicon-trash"></i></span> Delete</button>
