@@ -16,7 +16,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     Redirect(routes.HomeController.taskList())
   }
 
-  def taskList = Action {
+  def taskList = Action { implicit request =>
     Ok(views.html.tasklist(taskDao.all()))
   }
 
@@ -26,7 +26,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
       formWithErrors => BadRequest("WRONG!!!"),
       task => {
         taskDao.create(task.label, task.task, new Date(), task.expirationDate, task.assigner, task.executor)
-        Redirect(routes.HomeController.taskList)
+        Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been created!")
       }
     )
   }
@@ -38,7 +38,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
           formWithErrors => BadRequest("WRONG!!!"),
           task => {
             taskDao.edit(id, task.label, task.task, task.expirationDate, task.assigner, task.executor)
-            Redirect(routes.HomeController.taskList)
+            Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been edited!")
           }
         )
       case None => BadRequest("Not Found")
@@ -59,7 +59,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
 
   def taskDelete(id: Long) = Action { implicit request =>
     taskDao.delete(id)
-    Redirect(routes.HomeController.taskList())
+    Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been deleted!")
   }
 
   val taskForm = Form(

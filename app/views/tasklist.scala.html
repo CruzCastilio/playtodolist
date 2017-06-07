@@ -1,8 +1,35 @@
-@(tasks: List[Task])(implicit messages: Messages)
+@(tasks: List[Task])(implicit messages: Messages, flash: Flash)
 
 @import java.util.Date
 
 @main("ToDo task list") {
+
+  @if(flash.data) {
+    <script>
+            $(document).ready(function () {
+              $("#myModal").modal("show");
+            });
+    </script>
+  }
+  <div id="myModal" class="modal fade" tabindex="-1" role="dialog" style="position: absolute; top: 30%">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" style="text-align: center"><b>TASK STATUS</b></h4>
+        </div>
+        <div class="modal-body">
+          <h4 style="text-align: center">@flash.get("success")</h4>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" data-dismiss="modal" role="button" style="position: relative;
+            outline: none; width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+            <i class="glyphicon glyphicon-ok"></i></span> OK</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
   <div>
     <div class="well well-sm">
