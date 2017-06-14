@@ -27,46 +27,71 @@
     }
   }
 
+  @if(taskForm.hasErrors) {
+    @for((errorKey, errorMessage) <- taskForm.errors.groupBy(_.key).map { case (key, errors) => (key, errors.sortBy(_.message).reverse.headOption.map(_.message).getOrElse(""))}) {
+      <script>
+              $(function() {
+                $("#@errorKey").addClass("has-error");
+                $("#@errorKey").append('<p class="alert-danger" style="position: absolute">@errorMessage</p>');
+              });
+      </script>
+    }
+  }
+
+  @if(taskForm.hasErrors && params.isDefined) {
+    <script>
+            $(function () {
+              $(".field").prop("readonly", false);
+              $("#edit").hide();
+              $("#confirm").show();
+              $("#cancel").show();
+              $("#creationDateBlock, #deleteButton").hide();
+              $("#taskHeader").text("TASK EDIT");
+            });
+    </script>
+  }
+
   <div class="well well-sm">
     <h2 id="taskHeader" style="text-align: center">TASK LIST</h2>
   </div>
-  <form role="form" id="newtask" method="post">
+  <form role="form" id="newtask" method="post" autocomplete="off">
     <div class="form-group row">
-      <div class="form-group col-xs-4">
+      <div class="form-group col-xs-4" id="label">
         <label for="label" class="control-label"><span class="glyphicon glyphicon-modal-window"></span> Label:</label>
         <input name="label" type="text" class="form-control field" value="@taskForm("label").value"
-        id="inputLabel" placeholder="Label" readonly>
+        placeholder="Label" readonly>
       </div>
       <div class="form-group col-xs-2">
         <div id="creationDateBlock">
           <label for="creationDate" class="control-label"><span class="glyphicon glyphicon-calendar">
           </span> Creation Date:</label>
-          <input name="creationDate" type="date" class="form-control field" id="inputExpirationDate"
+          <input name="creationDate" type="date" class="form-control field" id="creationDate"
           value="@if(params.isDefined)(params.get._2)" readonly>
         </div>
       </div>
-      <div class="form-group col-xs-2">
+      <div class="form-group col-xs-2" id="expirationDate">
         <label for="expirationDate" class="control-label"><span class="glyphicon glyphicon-calendar">
         </span> Expiration Date:</label>
-        <input name="expirationDate" type="date" class="form-control field" id="inputExpirationDate"
+        <input name="expirationDate" type="date" class="form-control field"
         placeholder="Expiration Date" value="@taskForm("expirationDate").value" readonly>
       </div>
-      <div class="form-group col-xs-2">
+      <div class="form-group col-xs-2" id="assigner">
         <label for="assigner" class="control-label"><span class="glyphicon glyphicon-user"></span> Assigner:</label>
         <input name="assigner" type="text" class="form-control field" value="@taskForm("assigner").value"
-        id="inputAssigner" placeholder="Assigner" readonly>
+        placeholder="Assigner" readonly>
       </div>
-      <div class="form-group col-xs-2">
+      <div class="form-group col-xs-2" id="executor">
         <label for="executor" class="control-label"><span class="glyphicon glyphicon-user"></span> Executor:</label>
         <input name="executor" type="text" class="form-control field" value="@taskForm("executor").value"
-        id="inputExecutor" placeholder="Executor" readonly>
+        placeholder="Executor" readonly>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" id="task">
       <label for="task" class="control-label"><span class="glyphicon glyphicon-align-justify  "></span> Task:</label>
-      <textarea name="task" class="form-control field" rows="5" id="inputTask" placeholder="Task" readonly>@taskForm(
+      <textarea name="task" class="form-control field" rows="5" placeholder="Task" readonly>@taskForm(
       "task").value</textarea>
     </div>
+    <br>
     <button id="edit" class="btn btn-info" type="button" role="button" style="position: relative; outline: none;
     width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
       <i class="glyphicon glyphicon-pencil"></i></span> Edit</button>
@@ -94,6 +119,10 @@
               $("#edit, #creationDateBlock, #deleteButton").show();
               $("#taskHeader").text("TASK DETAILS");
             });
+            $("#reset").click(function () {
+              $(".has-error").removeClass("has-error");
+              $(".alert-danger").remove();
+            });
     </script>
   </form>
   <br>
@@ -109,7 +138,6 @@
           <h4 style="text-align: center">Do you want to delete the task?</h4>
         </div>
         <div class="modal-footer">
-
           <form id="deleteForm" method="post">
             <button class="btn btn-success col-md-1" type="submit" role="button" style="position: relative;
             outline: none; width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%"><i
@@ -118,30 +146,12 @@
           <button class="btn btn-danger" data-dismiss="modal" role="button" style="position: relative; outline: none;
           width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
           <i class="glyphicon glyphicon-remove"></i></span> Cancel</button>
-
         </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+      </div>
+    </div>
+  </div>
   <button id="deleteButton" class="btn btn-danger" type="button" role="button" data-toggle="modal"
   data-target="#myModal" style="position: relative; outline: none; width: 10%; display: none"><span class="btn-label"
   style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i></span> Delete</button>
-
-
-
-
-  @*      <!-- helper style -->
-
-  @form(routes.HomeController.taskPost) {
-  @inputText(taskForm("id"), '_label -> "Id", 'class -> "form-control", 'disabled -> true)
-  @inputText(taskForm("label"), '_label -> "Label", 'class -> "form-control field", 'disabled -> true)
-  @inputDate(taskForm("creationDate"), '_label -> "Creation Date", 'class -> "form-control field", 'disabled -> true)
-  @inputDate(taskForm("expirationDate"), '_label -> "Expiration Date", 'class -> "form-control field", 'disabled -> true)
-  @inputText(taskForm("assigner"), '_label -> "Assigner", 'class -> "form-control field", 'disabled -> true)
-  @inputText(taskForm("executor"),  '_label -> "Executor",'class -> "form-control field", 'disabled -> true)
-  @inputText(taskForm("task"), '_label -> "Task", 'class -> "form-control field", 'disabled -> true)
-  <button class="btn btn-default" type="submit">Save &raquo;</button>
-  }
-  *@
 
 }
