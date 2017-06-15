@@ -40,7 +40,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
             Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been edited!")
           }
         )
-      case None => BadRequest("Not Found 404")
+      case None => BadRequest
     }
   }
 
@@ -48,7 +48,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     taskDao.findById(id) match {
       case obj @ Some(task) => Ok(views.html.taskedit(Some((task.id, task.creationDate)), taskForm.fill(TaskForm(
         task.label, task.task, task.expirationDate, task.assigner, task.executor))))
-      case None => BadRequest("Not Found 404")
+      case None => BadRequest(views.html.errors("There is no such task in DB."))
     }
   }
 
