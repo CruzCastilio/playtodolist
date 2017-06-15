@@ -2,9 +2,11 @@ import javax.inject._
 
 import play.api.http.DefaultHttpErrorHandler
 import play.api._
+import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, NOT_FOUND}
 import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.routing.Router
+
 import scala.concurrent._
 
 @Singleton
@@ -15,23 +17,21 @@ class ErrorHandler @Inject() (
                                router: Provider[Router]
                              ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
-
-  override def onForbidden(request: RequestHeader, message: String) = {
-    Future.successful(
-      Forbidden("You're not allowed to access this resource.")
-    )
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
+    statusCode match {
+      case BAD_REQUEST => Future.successful(BadRequest(views.html.errors("BAD REQUEST")))
+      case FORBIDDEN => Future.successful(Forbidden(views.html.errors("You're not allowed to access this resource.")))
+      case NOT_FOUND => Future.successful(NotFound(views.html.errors("PAGE NOT FOUND")))
+      case clientError if statusCode >= 400 && statusCode < 500 =>
+        Future.successful(Results.Status(clientError)(views.html.defaultpages.badRequest(request.method, request.uri, message)))
+      case nonClientError =>
+        throw new IllegalArgumentException(s"onClientError invoked with non client error status code $statusCode: $message")
+    }
   }
 
-  override def onNotFound(request: RequestHeader, message: String): Future[Result] = {
+  override def onServerError(request: RequestHeader, exception: Throwable) = {
     Future.successful(
-      NotFound(views.html.errors("PAGE NOT FOUND"))
+      InternalServerError("A server error occurred: " + exception.getMessage)
     )
   }
-
-  override def onBadRequest(request: RequestHeader, message: String): Future[Result] = {
-    Future.successful(
-      BadRequest(views.html.errors("BAD REQUEST"))
-    )
-  }
-
 }
