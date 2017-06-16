@@ -25,7 +25,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
       formWithErrors => BadRequest(views.html.taskedit(None, formWithErrors)),
       task => {
         taskDao.create(task.label, task.task, new Date(), task.expirationDate, task.assigner, task.executor)
-        Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been created!")
+        Redirect(routes.HomeController.taskList()).flashing("success" -> messagesApi("flashCreated"))
       }
     )
   }
@@ -37,7 +37,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
           formWithErrors => BadRequest(views.html.taskedit(Some((found.id, found.creationDate)), formWithErrors)),
           task => {
             taskDao.edit(id, task.label, task.task, task.expirationDate, task.assigner, task.executor)
-            Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been edited!")
+            Redirect(routes.HomeController.taskList()).flashing("success" -> messagesApi("flashEdited"))
           }
         )
       case None => BadRequest
@@ -48,7 +48,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     taskDao.findById(id) match {
       case obj @ Some(task) => Ok(views.html.taskedit(Some((task.id, task.creationDate)), taskForm.fill(TaskForm(
         task.label, task.task, task.expirationDate, task.assigner, task.executor))))
-      case None => BadRequest(views.html.errors("There is no such task in DB."))
+      case None => BadRequest(views.html.errors(messagesApi("wrongId")))
     }
   }
 
@@ -58,16 +58,16 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
 
   def taskDelete(id: Long) = Action { implicit request =>
     taskDao.delete(id)
-    Redirect(routes.HomeController.taskList()).flashing("success" -> "The task has been deleted!")
+    Redirect(routes.HomeController.taskList()).flashing("success" -> messagesApi("flashDeleted"))
   }
 
   val taskForm = Form(
     mapping(
-      "label" -> text.verifying("From 3 to 30 characters.", s => s.length >=3 && s.length <= 30),
-      "task" -> text.verifying("Shouldn't be empty.", _.trim.nonEmpty),
-      "expirationDate" -> date.verifying("Invalid expiration date.", _.after(new Date())),
-      "assigner" -> text.verifying("From 2 to 15 characters.", s => s.length >=2 && s.length <= 15),
-      "executor" -> text.verifying("From 2 to 15 characters.", s => s.length >=2 && s.length <= 15)
+      "label" -> text.verifying(messagesApi("verificationLabel"), s => s.length >=3 && s.length <= 30),
+      "task" -> text.verifying(messagesApi("verificationTask"), _.trim.nonEmpty),
+      "expirationDate" -> date.verifying(messagesApi("verificationExpirationDate"), _.after(new Date())),
+      "assigner" -> text.verifying(messagesApi("verificationAssigner"), s => s.length >=2 && s.length <= 15),
+      "executor" -> text.verifying(messagesApi("verificationExecutor"), s => s.length >=2 && s.length <= 15)
     )(TaskForm.apply)(TaskForm.unapply)
   )
 

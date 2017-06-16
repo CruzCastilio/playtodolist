@@ -1,23 +1,24 @@
-@(params: Option[(Long, java.util.Date)] = None, taskForm: Form[TaskForm])(implicit messages: Messages)
+@(params: Option[(Long, java.util.Date)] = None, taskForm: Form[TaskForm])(implicit messages: Messages, lang: Lang)
 
-@main("ToDo task list") {
+@main(messages("titleTask")) {
 
   @params match {
     case Some((id, date)) => {
       <script>
               $(function () {
-                $("#taskHeader").text("TASK DETAILS");
+                $("#taskHeader").text("@messages("taskDetailsUpperCase")");
                 $("#edit").show();
                 $("#deleteButton").show();
                 $("#deleteForm").prop("action", "@routes.HomeController.taskDelete(id)");
                 $("#newtask").prop("action", "@routes.HomeController.taskEdit(id)");
+                $("#cancel").prop("href", "@routes.HomeController.taskDetails(id)");
               })
       </script>
     }
     case None => {
       <script>
               $(function () {
-                $("#taskHeader").text("NEW TASK");
+                $("#taskHeader").text("@messages("taskNewUpperCase")");
                 $(".field").prop("readonly", false);
                 $("#reset, #confirm").show();
                 $("#newtask").prop("action", "@routes.HomeController.taskPost");
@@ -28,7 +29,8 @@
   }
 
   @if(taskForm.hasErrors) {
-    @for((errorKey, errorMessage) <- taskForm.errors.groupBy(_.key).map { case (key, errors) => (key, errors.sortBy(_.message).reverse.headOption.map(_.message).getOrElse(""))}) {
+    @for((errorKey, errorMessage) <- taskForm.errors.groupBy(_.key).map { case (key, errors) => (key,
+      errors.sortBy(_.message).reverse.headOption.map(_.message).getOrElse(""))}) {
       <script>
               $(function() {
                 $("#@errorKey").addClass("has-error");
@@ -46,64 +48,64 @@
               $("#confirm").show();
               $("#cancel").show();
               $("#creationDateBlock, #deleteButton").hide();
-              $("#taskHeader").text("TASK EDIT");
+              $("#taskHeader").text("@messages("taskEditUpperCase")");
             });
     </script>
   }
 
   <div class="well well-sm">
-    <h2 id="taskHeader" style="text-align: center">TASK LIST</h2>
+    <h2 id="taskHeader" style="text-align: center">@messages("taskListUpperCase")</h2>
   </div>
   <form role="form" id="newtask" method="post" autocomplete="off">
     <div class="form-group row">
       <div class="form-group col-xs-4" id="label">
-        <label for="label" class="control-label"><span class="glyphicon glyphicon-modal-window"></span> Label:</label>
+        <label for="label" class="control-label"><span class="glyphicon glyphicon-modal-window"></span> @messages("tableLabel"):</label>
         <input name="label" type="text" class="form-control field" value="@taskForm("label").value"
-        placeholder="Label" readonly>
+        placeholder="@messages("tableLabel")" readonly>
       </div>
       <div class="form-group col-xs-2">
         <div id="creationDateBlock">
           <label for="creationDate" class="control-label"><span class="glyphicon glyphicon-calendar">
-          </span> Creation Date:</label>
+          </span> @messages("tableCreationDate"):</label>
           <input name="creationDate" type="date" class="form-control field" id="creationDate"
-          value="@if(params.isDefined)(params.get._2)" readonly>
+          value="@if(params.isDefined)(params.map(_._2).getOrElse(""))" readonly>
         </div>
       </div>
       <div class="form-group col-xs-2" id="expirationDate">
         <label for="expirationDate" class="control-label"><span class="glyphicon glyphicon-calendar">
-        </span> Expiration Date:</label>
+        </span> @messages("tableExpirationDate"):</label>
         <input name="expirationDate" type="date" class="form-control field"
-        placeholder="Expiration Date" value="@taskForm("expirationDate").value" readonly>
+        placeholder="@messages("tableExpirationDate")" value="@taskForm("expirationDate").value" readonly>
       </div>
       <div class="form-group col-xs-2" id="assigner">
-        <label for="assigner" class="control-label"><span class="glyphicon glyphicon-user"></span> Assigner:</label>
+        <label for="assigner" class="control-label"><span class="glyphicon glyphicon-user"></span> @messages("tableAssigner"):</label>
         <input name="assigner" type="text" class="form-control field" value="@taskForm("assigner").value"
-        placeholder="Assigner" readonly>
+        placeholder="@messages("tableAssigner")" readonly>
       </div>
       <div class="form-group col-xs-2" id="executor">
-        <label for="executor" class="control-label"><span class="glyphicon glyphicon-user"></span> Executor:</label>
+        <label for="executor" class="control-label"><span class="glyphicon glyphicon-user"></span> @messages("tableExecutor"):</label>
         <input name="executor" type="text" class="form-control field" value="@taskForm("executor").value"
-        placeholder="Executor" readonly>
+        placeholder="@messages("tableExecutor")" readonly>
       </div>
     </div>
     <div class="form-group" id="task">
-      <label for="task" class="control-label"><span class="glyphicon glyphicon-align-justify  "></span> Task:</label>
-      <textarea name="task" class="form-control field" rows="5" placeholder="Task" readonly>@taskForm(
+      <label for="task" class="control-label"><span class="glyphicon glyphicon-align-justify  "></span> @messages("tableTask"):</label>
+      <textarea name="task" class="form-control field" rows="5" placeholder="@messages("tableTask")" readonly>@taskForm(
       "task").value</textarea>
     </div>
     <br>
     <button id="edit" class="btn btn-info" type="button" role="button" style="position: relative; outline: none;
-    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-pencil"></i></span> Edit</button>
+    width: 15%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-pencil"></i></span> @messages("buttonEdit")</button>
     <button id="confirm" class="btn btn-success" type="submit" role="button" style="position: relative; outline: none;
-    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-ok"></i></span> Confirm</button>
+    width: 15%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-ok"></i></span> @messages("buttonConfirm")</button>
     <button id="reset" class="btn btn-danger" type="reset" role="button" style="position: relative; outline: none;
-    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-remove"></i></span> Reset</button>
-    <button id="cancel" class="btn btn-danger" type="reset" role="button" style="position: relative;outline: none;
-    width: 10%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-      <i class="glyphicon glyphicon-remove"></i></span> Cancel</button>
+    width: 15%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-remove"></i></span> @messages("buttonReset")</button>
+    <a id="cancel" class="btn btn-danger" type="reset" role="button" style="position: relative;outline: none;
+    width: 15%; display: none"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+      <i class="glyphicon glyphicon-remove"></i></span> @messages("buttonCancel")</a>
     <script>
             $("#edit").click(function () {
               $(".field").prop("readonly", false);
@@ -111,13 +113,15 @@
               $("#confirm").show();
               $("#cancel").show();
               $("#creationDateBlock, #deleteButton").hide();
-              $("#taskHeader").text("TASK EDIT");
+              $("#taskHeader").text("@messages("taskEditUpperCase")");
             });
             $("#cancel").click(function () {
               $(".field").prop("readonly", true);
               $("#cancel, #confirm").hide();
               $("#edit, #creationDateBlock, #deleteButton").show();
-              $("#taskHeader").text("TASK DETAILS");
+              $("#taskHeader").text("@messages("taskDetailsUpperCase")");
+              $(".has-error").removeClass("has-error");
+              $(".alert-danger").remove();
             });
             $("#reset").click(function () {
               $(".has-error").removeClass("has-error");
@@ -132,26 +136,26 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
           aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" style="text-align: center"><b>TASK DELETING</b></h4>
+          <h4 class="modal-title" style="text-align: center"><b>@messages("modalTaskDeletingUpperCase")</b></h4>
         </div>
         <div class="modal-body">
-          <h4 style="text-align: center">Do you want to delete the task?</h4>
+          <h4 style="text-align: center">@messages("modalDeleteConfirm")</h4>
         </div>
         <div class="modal-footer">
           <form id="deleteForm" method="post">
             <button class="btn btn-success col-md-1" type="submit" role="button" style="position: relative;
             outline: none; width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%"><i
-            class="glyphicon glyphicon-trash"></i></span> Delete</button>
+            class="glyphicon glyphicon-trash"></i></span> @messages("buttonDelete")</button>
           </form>
           <button class="btn btn-danger" data-dismiss="modal" role="button" style="position: relative; outline: none;
           width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
-          <i class="glyphicon glyphicon-remove"></i></span> Cancel</button>
+          <i class="glyphicon glyphicon-remove"></i></span> @messages("buttonCancel")</button>
         </div>
       </div>
     </div>
   </div>
   <button id="deleteButton" class="btn btn-danger" type="button" role="button" data-toggle="modal"
-  data-target="#myModal" style="position: relative; outline: none; width: 10%; display: none"><span class="btn-label"
-  style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i></span> Delete</button>
+  data-target="#myModal" style="position: relative; outline: none; width: 15%; display: none"><span class="btn-label"
+  style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i></span> @messages("buttonDelete")</button>
 
 }

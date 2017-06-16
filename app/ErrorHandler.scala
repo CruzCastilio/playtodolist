@@ -3,6 +3,7 @@ import javax.inject._
 import play.api.http.DefaultHttpErrorHandler
 import play.api._
 import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, NOT_FOUND}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.routing.Router
@@ -10,12 +11,12 @@ import play.api.routing.Router
 import scala.concurrent._
 
 @Singleton
-class ErrorHandler @Inject() (
+class ErrorHandler @Inject() (val messagesApi: MessagesApi)(
                                env: Environment,
                                config: Configuration,
                                sourceMapper: OptionalSourceMapper,
                                router: Provider[Router]
-                             ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
+                             ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) with I18nSupport{
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
     statusCode match {
