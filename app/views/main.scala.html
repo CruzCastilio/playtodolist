@@ -1,8 +1,9 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit messages: Messages, lang: Lang)
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en, ru">
   <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <title>@title</title>
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
@@ -12,13 +13,21 @@
   </head>
   <body>
     <div class="jumbotron text-center">
-      <h1>ToDo List Application</h1>
+      <h1>@messages("header")</h1>
+      <div style="margin-bottom: 20px">
       <a href="@routes.HomeController.taskList" class="btn btn-info" role="button" style="position: relative;
       outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
-      class="glyphicon glyphicon-list"></span> Task List</a>
+      class="glyphicon glyphicon-list"></span>@messages("taskList")</a>
       <a href="@routes.HomeController.taskNew" class="btn btn-info" role="button" style="position: relative;
       outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
-      class="glyphicon glyphicon-plus"></span>Create Task</a>
+      class="glyphicon glyphicon-plus"></span>@messages("createTask")</a>
+      </div>
+      <div style="position: absolute;  width: 100%;">
+      <a href="@routes.LanguageController.switchToLanguage("en")" role="button" class="btn btn-warning" style="position: relative;
+        outline: none; width: 2%; padding: 0"><small>En</small></a>
+      <a href="@routes.LanguageController.switchToLanguage("ru")" role="button" class="btn btn-warning" style="position: relative;
+        outline: none; width: 2%; padding: 0"><small>Ru</small></a>
+      </div>
     </div>
     <div class="container">@content</div>
   </body>

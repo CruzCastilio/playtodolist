@@ -1,23 +1,50 @@
-@(tasks: List[Task])(implicit messages: Messages)
+@(tasks: List[Task])(implicit messages: Messages, flash: Flash)
 
 @import java.util.Date
 
-@main("ToDo task list") {
+@main(messages("titleList")) {
+
+  @if(flash.data) {
+    <script>
+            $(document).ready(function () {
+              $("#myModal").modal("show");
+            });
+    </script>
+  }
+  <div id="myModal" class="modal fade" tabindex="-1" role="dialog" style="position: absolute; top: 30%">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" style="text-align: center"><b>@messages("modalStatus")</b></h4>
+        </div>
+        <div class="modal-body">
+          <h4 style="text-align: center">@flash.get("success")</h4>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" data-dismiss="modal" role="button" style="position: relative;
+            outline: none; width: 40%"><span class="btn-label" style="position: absolute; top: 20%; left: 5%">
+            <i class="glyphicon glyphicon-ok"></i></span>OK</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
   <div>
     <div class="well well-sm">
-      <h2 style="text-align: center; ">TASK LIST</h2>
+      <h2 style="text-align: center; ">@messages("taskListUpperCase")</h2>
     </div>
     <table class="table table-bordered table-striped">
       <thead>
         <tr style="background-color: #EEEEEE">
           <th class="text-center" style="width: 3%">#</th>
-          <th class="text-center">Task</th>
-          <th class="text-center" style="width: 8%; padding-left: 0px; padding-right: 0px">Status</th>
-          <th class="text-center" style="width: 10%; padding-left: 0px; padding-right: 0px">Creation Date</th>
-          <th class="text-center" style="width: 10%; padding-left: 0px; padding-right: 0px">Expiration Date</th>
-          <th class="text-center" style="width: 15%">Assigner</th>
-          <th class="text-center" style="width: 15%">Executor</th>
+          <th class="text-center">@messages("tableLabel")</th>
+          <th class="text-center" style="width: 8%; padding-left: 0px; padding-right: 0px">@messages("tableStatus")</th>
+          <th class="text-center" style="width: 10%; padding-left: 0px; padding-right: 0px">@messages("tableCreationDate")</th>
+          <th class="text-center" style="width: 10%; padding-left: 0px; padding-right: 0px">@messages("tableExpirationDate")</th>
+          <th class="text-center" style="width: 15%">@messages("tableAssigner")</th>
+          <th class="text-center" style="width: 15%">@messages("tableExecutor")</th>
         </tr>
       </thead>
       <tbody class="text-center">
@@ -26,9 +53,9 @@
         <td style="width: 3%; vertical-align: middle">@(index + 1)</td>
         <td style="vertical-align: middle">@task.label</td>
         @if(task.expirationDate before new Date()) {
-          <td class="danger" style="vertical-align: middle">Expired</td>
+          <td class="danger" style="vertical-align: middle">@messages("tableExpired")</td>
         } else {
-          <td class="success" style="vertical-align: middle">In process</td>
+          <td class="success" style="vertical-align: middle">@messages("tableInProcess")</td>
         }
         <td style="vertical-align: middle">@task.creationDate.format("dd/MM/yyyy")</td>
         <td style="vertical-align: middle">@task.expirationDate.format("dd/MM/yyyy")</td>
