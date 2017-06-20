@@ -1,4 +1,4 @@
-@(params: Option[(Long, java.util.Date)] = None, taskForm: Form[TaskForm])(implicit messages: Messages, lang: Lang)
+@(params: Option[(Long, java.util.Date)] = None, taskForm: Form[TaskForm])(implicit messages: Messages)
 
 @main(messages("titleTask")) {
 
@@ -157,5 +157,4 @@
   <button id="deleteButton" class="btn btn-danger" type="button" role="button" data-toggle="modal"
   data-target="#myModal" style="position: relative; outline: none; width: 15%; display: none"><span class="btn-label"
   style="position: absolute; top: 20%; left: 5%"><i class="glyphicon glyphicon-trash" st></i></span> @messages("buttonDelete")</button>
-
 }

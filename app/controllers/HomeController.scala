@@ -9,6 +9,7 @@ import play.api.data._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 
+
 @Singleton
 class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) extends Controller with I18nSupport {
 
@@ -46,13 +47,13 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
 
   def taskDetails(id: Long) = Action { implicit request =>
     taskDao.findById(id) match {
-      case obj @ Some(task) => Ok(views.html.taskedit(Some((task.id, task.creationDate)), taskForm.fill(TaskForm(
+      case Some(task) => Ok(views.html.taskedit(Some((task.id, task.creationDate)), taskForm.fill(TaskForm(
         task.label, task.task, task.expirationDate, task.assigner, task.executor))))
       case None => BadRequest(views.html.errors(messagesApi("wrongId")))
     }
   }
 
-  def taskNew = Action {
+  def taskNew = Action { implicit request =>
     Ok(views.html.taskedit(None, taskForm))
   }
 
@@ -63,11 +64,11 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
 
   val taskForm = Form(
     mapping(
-      "label" -> text.verifying(messagesApi("verificationLabel"), s => s.length >=3 && s.length <= 30),
+      "label" -> text.verifying(messagesApi("verificationLabel"), s => s.length >= 3 && s.length <= 30),
       "task" -> text.verifying(messagesApi("verificationTask"), _.trim.nonEmpty),
       "expirationDate" -> date.verifying(messagesApi("verificationExpirationDate"), _.after(new Date())),
-      "assigner" -> text.verifying(messagesApi("verificationAssigner"), s => s.length >=2 && s.length <= 15),
-      "executor" -> text.verifying(messagesApi("verificationExecutor"), s => s.length >=2 && s.length <= 15)
+      "assigner" -> text.verifying(messagesApi("verificationAssigner"), s => s.length >= 2 && s.length <= 15),
+      "executor" -> text.verifying(messagesApi("verificationExecutor"), s => s.length >= 2 && s.length <= 15)
     )(TaskForm.apply)(TaskForm.unapply)
   )
 
