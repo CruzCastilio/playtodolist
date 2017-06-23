@@ -13,17 +13,25 @@ import play.api.mvc._
 @Singleton
 class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) extends Controller with I18nSupport with Logging {
 
-  def index = Action { implicit request =>
+  def withLog(f: Request[AnyContent] => Result): Action[AnyContent] = {
+    val start = System.currentTimeMillis()
+    val res = Action { request => f(request) }
+    val finish = System.currentTimeMillis() - start
+    logger.info(s"Request Processing Time: $finish ms")
+    res
+  }
+
+  def index = withLog { implicit request =>
     logger.info("Home Page Attempt")
     Redirect(routes.HomeController.taskList())
   }
 
-  def taskList = Action { implicit request =>
+  def taskList = withLog { implicit request =>
     logger.info("Task List Opening")
     Ok(views.html.tasklist(taskDao.all()))
   }
 
-  def taskPost = Action { implicit request =>
+  def taskPost = withLog { implicit request =>
     logger.info("New Task Creating Attempt")
     taskForm.bindFromRequest.fold(
       formWithErrors => {
@@ -38,7 +46,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     )
   }
 
-  def taskEdit(id: Long) = Action { implicit request =>
+  def taskEdit(id: Long) = withLog { implicit request =>
     logger.info("Task ID Searching Attempt")
     taskDao.findById(id) match {
       case Some(found) =>
@@ -60,7 +68,7 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     }
   }
 
-  def taskDetails(id: Long) = Action { implicit request =>
+  def taskDetails(id: Long) = withLog { implicit request =>
     logger.info("Task ID Searching Attempt")
     taskDao.findById(id) match {
       case Some(task) =>
@@ -73,12 +81,12 @@ class HomeController @Inject()(taskDao: TaskDao, val messagesApi: MessagesApi) e
     }
   }
 
-  def taskNew = Action { implicit request =>
+  def taskNew = withLog { implicit request =>
     logger.info("New Task Creation Page Opened")
     Ok(views.html.taskedit(None, taskForm))
   }
 
-  def taskDelete(id: Long) = Action { implicit request =>
+  def taskDelete(id: Long) = withLog { implicit request =>
     logger.info("Successful Task Deleting")
     taskDao.delete(id)
     Redirect(routes.HomeController.taskList()).flashing("success" -> messagesApi("flashDeleted"))
