@@ -9,9 +9,9 @@ class LanguageController @Inject()(val messagesApi: MessagesApi, langs: Langs) e
 
   def switchToLanguage(language: String) = Action { implicit request =>
     if (langs.availables.exists(_.code == language)) {
-      Redirect(routes.HomeController.taskList()).withLang(Lang(language))
+      Redirect(routes.HomeController.index()).withLang(Lang(language))
     } else {
-      Redirect(routes.HomeController.taskList())
+      Redirect(routes.HomeController.index())
     }
   }
 

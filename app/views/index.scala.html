@@ -1,7 +1,33 @@
-@(tasks: List[Task], taskForm: Form[TaskForm])(implicit messages: Messages)
-
-
+@(userForm: Form[UserForm])(implicit messages: Messages)
 
 @main("ToDo List") {
+
+  <div class="well well-sm">
+    <h2 id="taskHeader" style="text-align: center">@messages("authenticationUpperCase")</h2>
+  </div>
+
+  <form id="loginForm" class="form-inline" style="text-align: center" role="form" method="post"
+    action="@routes.HomeController.userLogin" autocomplete="off">
+    <div class="form-group" id="username">
+      <div class="input-group" id="username">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+      <input type="text" class="form-control" name="username" placeholder="@messages("username")" value="@userForm("username").value">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group" id="password">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+      <input type="password" class="form-control" name="password" placeholder="@messages("password")" value="@userForm("password").value">
+      </div>
+      </div>
+    <button id="userLogin" type="submit" class="btn btn-success" role="button" style="position: relative;
+      outline: none; width: 10%"><span style="position: absolute; top: 25%; left: 4%" class="glyphicon glyphicon-log-in">
+    </span>@messages("login")</button>
+    <a href="@routes.HomeController.userNew" class="btn btn-info" role="button" style="position: relative;
+      outline: none; width: 22%"><span style="position: absolute; top: 25%; left: 2%" class="glyphicon glyphicon-user">
+    </span>@messages("userCreate")</a>
+  </form>
+
+
 
 }
