@@ -12,9 +12,23 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   </head>
   <body>
+    <script>
+
+
+    </script>
+
     <div class="jumbotron text-center">
       <h1>@messages("header")</h1>
-      <div style="margin-bottom: 20px">
+
+      <div>
+      <a href="@routes.HomeController.index" id="userLogin" type="submit" class="btn btn-success" role="button" style="position: relative;
+        outline: none; width: 10%"><span style="position: absolute; top: 25%; left: 4%" class="glyphicon glyphicon-log-out">
+      </span>@messages("login")</a>
+      <a href="@routes.HomeController.userLogout" id="userLogin" type="submit" class="btn btn-danger" role="button" style="position: relative;
+        outline: none; width: 10%"><span style="position: absolute; top: 25%; left: 4%" class="glyphicon glyphicon-log-out">
+      </span>@messages("logout")</a>
+      </div>
+      <div style="margin-bottom: 20px; margin-top: 5px">
       <a href="@routes.HomeController.taskList" class="btn btn-info" role="button" style="position: relative;
       outline: none; width: 8%"><span style="position: absolute; top: 25%; left: 5%"
       class="glyphicon glyphicon-list"></span>@messages("taskList")</a>

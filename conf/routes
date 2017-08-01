@@ -9,6 +9,12 @@ GET         /taskedit                controllers.HomeController.taskNew
 POST        /taskedit                controllers.HomeController.taskPost
 POST        /taskedit/:id/delete     controllers.HomeController.taskDelete(id: Long)
 
+# Users
+POST        /userlogin               controllers.HomeController.userLogin
+GET         /userlogout              controllers.HomeController.userLogout
+POST        /usercreate              controllers.HomeController.userCreate
+GET         /usercreate              controllers.HomeController.userNew
+
 # Language
 GET         /lang/:lang              controllers.LanguageController.switchToLanguage(lang: String)
 

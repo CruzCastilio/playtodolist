@@ -1,0 +1,39 @@
+@(userForm: Form[UserForm])(implicit messages: Messages)
+
+@main("ToDo List") {
+
+  @if(userForm.hasErrors) {
+    @for((errorKey, errorMessage) <- userForm.errors.groupBy(_.key).map { case (key, errors) => (key,
+            errors.sortBy(_.message).reverse.headOption.map(_.message).getOrElse(""))}) {
+      <script>
+              $(function() {
+                $("#@errorKey").addClass("has-error");
+                $("#@errorKey").append('<p class="alert-danger" style="position: absolute">@errorMessage</p>');
+              });
+      </script>
+    }
+  }
+
+  <div class="well well-sm">
+    <h2 id="taskHeader" style="text-align: center">@messages("userCreationUpperCase")</h2>
+  </div>
+
+  <form id="loginForm" class="form-inline" style="text-align: center" role="form" method="post"
+  action="@routes.HomeController.userCreate" autocomplete="off">
+    <div class="form-group" id="username">
+      <div class="input-group" id="username">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input type="text" class="form-control" name="username" placeholder="@messages("username")" value="@userForm("username").value">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group" id="password">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+        <input type="password" class="form-control" name="password" placeholder="@messages("password")" value="@userForm("password").value">
+      </div>
+    </div>
+    <button id="userLogin" type="submit" class="btn btn-success" role="button" style="position: relative;
+      outline: none; width: 10%"><span style="position: absolute; top: 25%; left: 4%" class="glyphicon glyphicon-log-in">
+    </span>@messages("create")</button>
+</form>
+}
